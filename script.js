@@ -1,10 +1,17 @@
+var record_animation = false;
+var name = "image_"
+var total_frames = 200;
+var frame = 0;
+var loop = 0;
+var total_time = 4*Math.PI;
+var rate = total_time/total_frames;
 
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
 
 var t = 0;
-var rate = .02;
+//var rate = .02;
 
 var r_scale = 1;
 var f_scale = 0.5;
@@ -15,7 +22,7 @@ var get_touch_pos = false;
 var fps, fpsInterval, startTime, now, then, elapsed;
 
 
-startAnimating(60);
+startAnimating(30);
 
 
 function draw() {
@@ -39,7 +46,7 @@ function draw() {
         }
     }
  
-    t += rate;
+    //t += rate;
         
 }
 
@@ -70,7 +77,34 @@ function animate(newtime) {
 
   if (elapsed > fpsInterval) {
     then = now - (elapsed % fpsInterval);
-    draw();  
+    draw();
+    
+    frame = (frame+1)%total_frames;
+    time = rate*frame;
+    t = time;
+
+    if(record_animation) {
+
+        if (loop === 1) { 
+        let frame_number = frame.toString().padStart(total_frames.toString().length, '0');
+        let filename = name+frame_number+'.png'
+            
+        dataURL = canvas.toDataURL();
+        var element = document.createElement('a');
+        element.setAttribute('href', dataURL);
+        element.setAttribute('download', filename);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        }
+
+        if (frame + 1 === total_frames) {
+            loop += 1;
+        }
+
+        if (loop === 2) { stop_animation = true }
+    }
   }
   
   canvas.addEventListener('mousedown', e => {
